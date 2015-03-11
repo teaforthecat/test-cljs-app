@@ -10,6 +10,15 @@
 ;; -------------------------
 ;; Views
 
+(def hostname-re (re-pattern "([a-z]{1,})-([a-z][a-z-]*[a-z]+)([0-9]+)?-?([0-9]+)?[-.]([a-z]{2,6})([.-][a-z]{2,6})?(?:.gdi)?"))
+
+(defrecord Server [hostname environment hostgroup number cluster location ] )
+
+(defn new-server [hostname]
+  (apply ->Server (re-matches hostname-re hostname)))
+
+(def test-list-of-servers ["qc-evoweb1.ep.gdi"] )
+
 (defn home-page []
   [:div [:h2 "Welcome to consulate"]
    [:div [:a {:href "#/about"} "go to about page"]]])

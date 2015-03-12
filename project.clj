@@ -14,11 +14,13 @@
                  [secretary "1.2.1"]
                  [org.clojure/clojurescript "0.0-2913" :scope "provided"]
                  [ring "1.3.2"]
-                 [ring/ring-json "0.3.1"]
+                 ;; [ring/ring-json "0.3.1"]
+                 [ring-middleware-format "0.4.0"] ;;replaces above
                  [ring/ring-defaults "0.1.3"]
                  [prone "0.8.0"]
                  [compojure "1.3.2"]
                  [selmer "0.8.0"]
+                 [cljs-ajax "0.3.10"]
                  [environ "1.0.0"]]
 
   :plugins [

@@ -1,12 +1,27 @@
 (ns consulate.handler
-  (:require [compojure.core :refer [GET defroutes routes context]]
+  (:require [compojure.core :refer [GET POST defroutes routes context]]
+            [compojure.response :refer [Renderable]]
             [compojure.route :refer [not-found resources]]
             [ring.middleware.defaults :refer [api-defaults site-defaults wrap-defaults]]
-            [ring.middleware.json :refer [wrap-json-response wrap-json-params wrap-json-body]]
+            ;; [ring.middleware.json :refer [wrap-json-response wrap-json-params wrap-json-body]]
+            [ring.middleware.format :refer [wrap-restful-format]] ;;replaces above
             [ring.util.response :refer [response]]
             [selmer.parser :refer [render-file]]
             [prone.middleware :refer [wrap-exceptions]]
             [environ.core :refer [env]]))
+
+(def hostname-re (re-pattern "([a-z]{1,})-([a-z][a-z-]*[a-z]+)([0-9]+)?-?([0-9]+)?[-.]([a-z]{2,6})([.-][a-z]{2,6})?(?:.gdi)?"))
+
+(defrecord Server [hostname environment hostgroup number cluster location gdi ] )
+
+(defn new-server [request]
+  (let [hostname (get-in request [:params :hostname])]
+    (apply ->Server (re-matches hostname-re hostname))))
+
+
+(defn hostname-handler [hostname]
+  (response {:body (new-server hostname) } ))
+
 
 (defn get-leader [request]
   (response {:body "10.1.10.12:8300"} ))
@@ -51,6 +66,7 @@
 (defroutes api-routes
   (context "/api" []
     (context "/v1" []
+      (POST "/hostname" [] hostname-handler)
       (context "/status" []
         (GET "/leader" [] get-leader)
         (GET "/peers" [] get-peers))
@@ -65,9 +81,10 @@
 (def app-handler
   (routes
    (-> api-routes
-       wrap-json-params
-       wrap-json-body
-       wrap-json-response
+       ;; wrap-json-params
+       ;; wrap-json-body
+       ;; wrap-json-response
+       wrap-restful-format
        (wrap-defaults api-defaults))
    (wrap-defaults site-routes site-defaults)))
 

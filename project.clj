@@ -20,8 +20,14 @@
                  [prone "0.8.0"]
                  [compojure "1.3.2"]
                  [selmer "0.8.0"]
-                 [cljs-ajax "0.3.10"]
-                 [environ "1.0.0"]]
+                 [cljs-ajax "0.3.10"] ;;replaced by sente
+                 [com.taoensso/sente "1.4.1"]
+                 [environ "1.0.0"] ;; replaced by nomad
+                 [jarohen/nomad "0.7.0"]
+                 [http-kit "2.1.18"] ;; replaces jetty/tomcat
+                 [org.danielsz/system "0.1.4"] ;; components (replaces figwheel ?)
+                 [com.stuartsierra/component "0.2.3"]
+                 ]
 
   :plugins [
             [lein-cljsbuild "1.0.4"]
@@ -36,7 +42,7 @@
 
   :uberjar-name "consulate.jar"
 
-  :main consulate.server
+;;  :main consulate.core
 
   :clean-targets ^{:protect false} ["resources/public/js"]
 
@@ -52,7 +58,7 @@
                                         :optimizations :none
                                         :pretty-print  true}}}}
 
-  :profiles {:dev {:repl-options {:init-ns consulate.handler
+  :profiles {:dev {:repl-options { ;;:init-ns consulate.dev
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
                    :dependencies [[ring-mock "0.1.5"]
@@ -63,7 +69,7 @@
                                   [com.cemerick/piggieback "0.1.6-SNAPSHOT"]
                                   [pjstadig/humane-test-output "0.6.0"]]
 
-                   :source-paths ["env/dev/clj"]
+                   :source-paths ["dev" "env/dev/clj"]
                    :plugins [[lein-figwheel "0.2.3-SNAPSHOT"]
                              [com.cemerick/clojurescript.test "0.3.2"]]
 
